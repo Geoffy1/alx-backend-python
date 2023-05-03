@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
-"""
-Import async_comprehension from the previous file and
-write a measure_runtime coroutine that will execute async_comprehension
-"""
-
-
-import time
+'''Task two module
+'''
 import asyncio
-async_comprehension = __import__('1-async_comprehension').async_comprehension
+import time
+from importlib import import_module as find
+
+
+async_comprehension = find('1-async_comprehension').async_comprehension
 
 
 async def measure_runtime() -> float:
-    """Measure the runtime"""
-    start_time = time.time()
-
-    await asyncio.gather(*(async_comprehension() for i in range(4)))
-
-    end_time = time.time()
+    '''Executes async_comprehension 4X  and measures the
+    total execution time.
+    '''
+    start_time = time.perf_counter()
+    await asyncio.gather(*(async_comprehension() for _ in range(4)))
+    end_time = time.perf_counter()
     return end_time - start_time
