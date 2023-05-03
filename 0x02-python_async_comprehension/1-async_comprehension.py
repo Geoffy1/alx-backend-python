@@ -1,7 +1,6 @@
-
 #!/usr/bin/env python3
-"""
-Return the 10 random numbers.
+
+"""Return the 10 random numbers.
 """
 
 
