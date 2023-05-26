@@ -12,7 +12,7 @@ from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
-    """tests for GithubOrgClient."""
+    """Unit tests for GithubOrgClient."""
 
     @parameterized.expand([
         ("google", {'login': "google"}),
@@ -37,7 +37,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
     @patch("client.get_json")
     def test_public_repos(self, mock_get_json: MagicMock) -> None:
-        """Tests the public_repos method."""
+        """Test the public_repos method."""
         test_payload = [
             {
                 "id": 7697149,
@@ -81,7 +81,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ({'license': {'key': "bsl-1.0"}}, "bsd-3-clause", False),
     ])
     def test_has_license(self, repo: Dict, key: str, expected: bool) -> None:
-        """Tests the has_license method."""
+        """Test the has_license method."""
         gh_org_client = GithubOrgClient("google")
         client_has_license = gh_org_client.has_license(repo, key)
         self.assertEqual(client_has_license, expected)
@@ -89,7 +89,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
 @parameterized_class(TEST_PAYLOAD)
 class TestIntegrationGithubOrgClient(unittest.TestCase):
-    """Integration test on GithubOrgClient."""
+    """Integration tests for GithubOrgClient."""
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -108,7 +108,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher.start()
 
     def test_public_repos(self) -> None:
-        """Tests the public_repos method"""
+        """Test the public_repos method."""
         self.assertEqual(
             GithubOrgClient("google").public_repos(),
             self.expected_repos,
@@ -123,7 +123,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        """tests Tear down test class."""
+        """Tear down the test class."""
         cls.get_patcher.stop()
 
 
