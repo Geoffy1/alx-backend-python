@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+"""A module that tests the client module.
+"""
 import unittest
 from typing import Dict
 from unittest.mock import MagicMock, Mock, PropertyMock, patch
@@ -9,7 +12,7 @@ from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
-    """Unit tests for GithubOrgClient."""
+    """tests for GithubOrgClient."""
 
     @parameterized.expand([
         ("google", {'login': "google"}),
@@ -34,7 +37,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
     @patch("client.get_json")
     def test_public_repos(self, mock_get_json: MagicMock) -> None:
-        """Test the public_repos method."""
+        """Tests the public_repos method."""
         test_payload = [
             {
                 "id": 7697149,
@@ -78,7 +81,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ({'license': {'key': "bsl-1.0"}}, "bsd-3-clause", False),
     ])
     def test_has_license(self, repo: Dict, key: str, expected: bool) -> None:
-        """Test the has_license method."""
+        """Tests the has_license method."""
         gh_org_client = GithubOrgClient("google")
         client_has_license = gh_org_client.has_license(repo, key)
         self.assertEqual(client_has_license, expected)
@@ -86,7 +89,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
 @parameterized_class(TEST_PAYLOAD)
 class TestIntegrationGithubOrgClient(unittest.TestCase):
-    """Integration tests for GithubOrgClient."""
+    """Integration test on GithubOrgClient."""
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -105,7 +108,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher.start()
 
     def test_public_repos(self) -> None:
-        """Test the public_repos method."""
+        """Tests the public_repos method"""
         self.assertEqual(
             GithubOrgClient("google").public_repos(),
             self.expected_repos,
@@ -120,7 +123,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        """Tear down the test class."""
+        """tests Tear down test class."""
         cls.get_patcher.stop()
 
 
