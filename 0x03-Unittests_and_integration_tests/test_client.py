@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Module for testing client """
+""" Module for testing clients """
 
 from client import GithubOrgClient
 from fixtures import TEST_PAYLOAD
@@ -10,7 +10,7 @@ from unittest.mock import patch, PropertyMock, Mock
 
 
 class TestGithubOrgClient(unittest.TestCase):
-    """ Class Gitghub ORG Client """
+    """ Class Gitghub ORG Clients """
 
     @parameterized.expand([
         ('google'),
@@ -18,7 +18,7 @@ class TestGithubOrgClient(unittest.TestCase):
     ])
     @patch('client.get_json')
     def test_org(self, input, mock):
-        """ Test the organization
+        """ Test the organizations
 
             args:
                 input: Name of the org
@@ -88,7 +88,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.mock = cls.get_patcher.start()
 
     def test_public_repos(self):
-        """ More integration """
+        """ More integrations """
         test_class = GithubOrgClient("google")
 
         self.assertEqual(test_class.org, self.org_payload)
@@ -109,5 +109,5 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """ After of each class """
+        """ After of each classes """
         cls.get_patcher.stop()
