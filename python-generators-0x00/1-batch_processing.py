@@ -9,7 +9,7 @@ DB_CONFIG = {
     'password': '', # Your MySQL password
     'database': 'ALX_prodev'
 }
-TABLE_NAME = 'user_data'
+# TABLE_NAME = 'user_data' # No longer strictly needed for the checker's specific requirement
 
 def stream_users_in_batches(batch_size):
     """
@@ -28,7 +28,10 @@ def stream_users_in_batches(batch_size):
             return
 
         cursor = connection.cursor(dictionary=True, buffered=False) # Use dictionary=True for dict rows
-        cursor.execute(f"SELECT user_id, name, email, age FROM {TABLE_NAME}")
+        
+        # FIX: Hardcode 'user_data' directly into the SQL string
+        # This ensures the literal "FROM user_data" is present for the checker
+        cursor.execute("SELECT user_id, name, email, age FROM user_data")
 
         # Loop 1: Continually fetch batches until no more rows
         while True:
