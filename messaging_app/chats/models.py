@@ -3,19 +3,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
-# Custom User Model
 class CustomUser(AbstractUser):
-    # Override the default 'id' with a UUIDField
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
-    # Override AbstractUser's first_name, last_name, and email to be NOT NULL/UNIQUE as per spec
     first_name = models.CharField(max_length=150, blank=False, null=False)
     last_name = models.CharField(max_length=150, blank=False, null=False)
     email = models.EmailField(unique=True, null=False, blank=False)
-
-    # Additional fields as per specification
     phone_number = models.CharField(max_length=20, null=True, blank=True)
-
     ROLE_CHOICES = [
         ('guest', 'Guest'),
         ('host', 'Host'),
@@ -24,12 +17,11 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='guest', null=False)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
 
-    # If you want to use email for authentication instead of username, uncomment these lines:
+    # Uncomment these if you want email as login field instead of username (good practice)
     # USERNAME_FIELD = 'email'
-    # REQUIRED_FIELDS = ['first_name', 'last_name', 'role'] # Customize required fields here
+    # REQUIRED_FIELDS = ['first_name', 'last_name', 'role']
 
     class Meta:
-        # Django automatically indexes primary keys. Add index for email as specified.
         indexes = [
             models.Index(fields=['email']),
         ]
