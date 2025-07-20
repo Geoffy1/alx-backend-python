@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='guest', null=False)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
 
-    # Uncomment these if you want email as login field instead of username (good practice)
+    # Uncomment these if you want email as login field instead username (good practice)
     # USERNAME_FIELD = 'email'
     # REQUIRED_FIELDS = ['first_name', 'last_name', 'role']
 
