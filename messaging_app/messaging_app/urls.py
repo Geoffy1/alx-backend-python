@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # Include the chat app's URLs under the 'api/' prefix
     path('api/', include('chats.urls')), # This line satisfies the checker's 'api/' requirement
+    path('api-auth/', include('rest_framework.urls')), # Add this line for task 4
 ]
 
 # Explanation:**
