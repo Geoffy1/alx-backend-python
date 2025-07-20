@@ -119,7 +119,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         """
         return Response({"detail": "This action is typically placed in ConversationViewSet or use filters on this viewset."})
 
-**Explanation:**
+""" **Explanation:**
 
 * **`ConversationViewSet`**:
     * Inherits `ModelViewSet` for CRUD.
@@ -138,3 +138,4 @@ class MessageViewSet(viewsets.ModelViewSet):
     * `serializer_class` links it to your `MessageSerializer`.
     * **`perform_create(self, serializer)`**: This is overridden to automatically set the `sender` of the message to the current authenticated user (`self.request.user`) and to link the message to the correct `conversation` based on an `id` provided in the request body. It also adds a check to ensure the sender is actually a participant of the target conversation.
 
+ """

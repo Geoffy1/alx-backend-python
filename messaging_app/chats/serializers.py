@@ -78,7 +78,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         # This method calculates and returns the number of messages in a conversation.
         return obj.messages.count()
 
-**Key Changes Explained:**
+""" **Key Changes Explained:**
 
 * **`UserSerializer`**:
     * Added `full_name = serializers.SerializerMethodField()`. This will provide a concatenated `first_name` and `last_name`. The `get_full_name` method returns a string, satisfying `serializers.CharField` implicitly as a string type.
@@ -87,3 +87,4 @@ class ConversationSerializer(serializers.ModelSerializer):
     * Added `validate(self, data)`: This is an object-level validation method. Both demonstrate the use of `serializers.ValidationError`.
 * **`ConversationSerializer`**:
     * Added `message_count = serializers.SerializerMethodField()` and its corresponding `get_message_count` method. This directly relates to the "including messages within a conversation" prompt and provides a practical use for `SerializerMethodField`.
+ """
