@@ -18,12 +18,14 @@ urlpatterns = [
 
 
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers # Changed from 'rest_framework' to 'rest_framework_nested'
 from .views import ConversationViewSet, MessageViewSet
 
 # Create a base router for top-level resources (e.g., conversations)
 router = routers.DefaultRouter()
 router.register(r'conversations', ConversationViewSet, basename='conversation')
+router.register(r'messages', MessageViewSet)
 
 # Create a nested router for messages, nested under conversations
 # This creates URLs like /conversations/{conversation_pk}/messages/

@@ -17,12 +17,24 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include # Ensure 'include' is imported
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    # TokenVerifyView, # Optional: For verifying tokens
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Include the chat app's URLs under the 'api/' prefix
-    path('api/', include('chats.urls')), # This line satisfies the checker's 'api/' requirement
-    path('api-auth/', include('rest_framework.urls')), # Add this line for task 4
+    # JWT Authentication URLs
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'), # Optional
+
+    # Include your 'chats' app URLs under an 'api/' prefix
+    path('api/', include('chats.urls')),
+
+    # Optional: DRF's login/logout URLs for the browsable API
+    path('api-auth/', include('rest_framework.urls')),
 ]
 
 # Explanation:**
