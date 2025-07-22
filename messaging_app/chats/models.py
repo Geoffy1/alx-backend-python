@@ -6,7 +6,7 @@ from django.utils import timezone
 
 
 # Define a CustomUserManager
-class CustomUserManager(UserManager):
+""" class CustomUserManager(UserManager):
     # Override _create_user to use email as the primary identifier
     def _create_user(self, email, password, **extra_fields):
         if not email:
@@ -33,8 +33,41 @@ class CustomUserManager(UserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
+        return self._create_user(email, password, **extra_fields) """
+
+class CustomUserManager(UserManager):
+    def _create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError("The given email must be set")
+        email = self.normalize_email(email)
+
+        # --- THIS IS THE CRUCIAL PART ---
+        # Ensure 'username' is set with a unique UUID if not provided or empty.
+        if 'username' not in extra_fields or not extra_fields['username']:
+            extra_fields['username'] = str(uuid.uuid4()) # Generate a unique UUID for username
+        # --- END CRUCIAL PART ---
+
+        # Ensure the user object is created *after* username is guaranteed to be in extra_fields
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
         return self._create_user(email, password, **extra_fields)
 
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(email, password, **extra_fields)
 
 # Custom User Model
 class CustomUser(AbstractUser):

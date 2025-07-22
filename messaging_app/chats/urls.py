@@ -1,3 +1,16 @@
+# messaging_app/chats/urls.py
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import UserViewSet, ConversationViewSet, MessageViewSet # Make sure these are imported correctly
+
+router = DefaultRouter()
+router.register(r'users', UserViewSet, basename='user') # <--- THIS IS CRUCIAL FOR /api/users/
+router.register(r'conversations', ConversationViewSet, basename='conversation')
+router.register(r'messages', MessageViewSet, basename='message')
+
+urlpatterns = [
+    path('', include(router.urls)), # <--- THIS IS CRUCIAL
+]
 """ from django.urls import path, include
 # CHANGE THIS LINE: Import the whole 'routers' module
 from rest_framework import routers # Changed from 'from rest_framework.routers import DefaultRouter'
@@ -17,7 +30,7 @@ urlpatterns = [
 
 
 
-from django.urls import path, include
+""" from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers # Changed from 'rest_framework' to 'rest_framework_nested'
 from .views import ConversationViewSet, MessageViewSet
@@ -36,4 +49,4 @@ conversations_router.register(r'messages', MessageViewSet, basename='conversatio
 urlpatterns = [
     path('', include(router.urls)), # Includes top-level conversation URLs
     path('', include(conversations_router.urls)), # Includes nested message URLs
-]
+] """
