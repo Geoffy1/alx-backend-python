@@ -1,66 +1,69 @@
 # messaging_app/chats/views.py
-from rest_framework import viewsets, status, permissions # 'permissions' for PermissionDenied
+
+from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated # <-- ENSURE THIS LINE IS PRESENT AND UNCOMMENTED
-from rest_framework import filters
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend # For django-filters
 
-from .models import Conversation, Message
-from .serializers import ConversationSerializer, MessageSerializer
-from .permissions import IsParticipantOfConversation # Your custom permission
-from .pagination import MessagePagination
-from .filters import MessageFilter
+from .models import CustomUser, Conversation, Message
+from .serializers import UserSerializer, ConversationSerializer, MessageSerializer
+from .permissions import IsParticipantOfConversation, IsSenderOfMessage
+from .filters import MessageFilter # Your custom filter class
 
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows users to be viewed.
+    Only allows authenticated users to list/retrieve other users.
+    """
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated] # Only authenticated users can view users
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['email', 'first_name', 'last_name']
+    ordering_fields = ['email', 'first_name', 'last_name', 'created_at']
 
 class ConversationViewSet(viewsets.ModelViewSet):
-    queryset = Conversation.objects.all()
+    """
+    API endpoint that allows conversations to be created, viewed, updated, or deleted.
+    Access is restricted to participants only.
+    """
+    queryset = Conversation.objects.all().prefetch_related('participants')
     serializer_class = ConversationSerializer
     permission_classes = [IsAuthenticated, IsParticipantOfConversation]
 
     def get_queryset(self):
+        # Ensure users only see conversations they are a part of
         return self.queryset.filter(participants=self.request.user).distinct()
 
     def perform_create(self, serializer):
-        conversation = serializer.save()
-        conversation.participants.add(self.request.user)
-        conversation.save()
+        # Pass the request context to the serializer for user access
+        serializer.save(request=self.request)
 
 class MessageViewSet(viewsets.ModelViewSet):
-    # Change self.queryset to Message.objects for checker's literal string search
-    queryset = Message.objects.all() # Still works functionally like self.queryset
+    """
+    API endpoint that allows messages to be created, viewed, updated, or deleted.
+    View access is for conversation participants. Update/delete only by sender.
+    """
+    queryset = Message.objects.all().select_related('sender', 'conversation')
     serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
-    pagination_class = MessagePagination
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_class = MessageFilter
-    search_fields = ['content']
-    ordering_fields = ['timestamp', 'sender__username']
+    permission_classes = [IsAuthenticated, IsSenderOfMessage] # Apply custom message permissions
+
+    # Filtering and search
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = MessageFilter # Apply your custom message filter
+    search_fields = ['message_body']
+    ordering_fields = ['sent_at']
 
     def get_queryset(self):
+        # Ensure users only see messages from conversations they are a part of
         user_conversations = self.request.user.conversations.all()
-        # Use Message.objects.filter explicitly to satisfy checker's string search
-        return Message.objects.filter(conversation__in=user_conversations).distinct()
+        return self.queryset.filter(conversation__in=user_conversations).distinct()
 
     def perform_create(self, serializer):
-        # The serializer correctly handles 'conversation_id' here
-        serializer.save(sender=self.request.user)
+        # Pass the request context to the serializer for user access and conversation validation
+        serializer.save(request=self.request)
 
-    def perform_update(self, serializer):
-        # Check if the current user is the sender of the message for PUT/PATCH
-        if serializer.instance.sender != self.request.user:
-            # Raise PermissionDenied, which DRF translates to 403 Forbidden.
-            # Add HTTP_403_FORBIDDEN string to message for checker.
-            raise permissions.PermissionDenied(
-                f"You do not have permission to edit this message. (Status: {status.HTTP_403_FORBIDDEN})"
-            )
-        serializer.save()
-
-    def perform_destroy(self, instance):
-        # Check if the current user is the sender of the message for DELETE
-        if instance.sender != self.request.user:
-            # Raise PermissionDenied, which DRF translates to 403 Forbidden.
-            # Add HTTP_403_FORBIDDEN string to message for checker.
-            raise permissions.PermissionDenied(
-                f"You do not have permission to delete this message. (Status: {status.HTTP_403_FORBIDDEN})"
-            )
-        instance.delete()
+    # No custom perform_update/destroy needed as default DRF handles it
+    # and permissions take care of authorization.

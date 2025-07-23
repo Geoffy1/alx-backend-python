@@ -152,7 +152,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5), # Access tokens valid for 5 minutes
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=45), # Access tokens valid for 5 minutes
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Refresh tokens valid for 1 day
     'ROTATE_REFRESH_TOKENS': True, # Refresh token is rotated on use
     'BLACKLIST_AFTER_ROTATION': True, # Old refresh token is blacklisted
@@ -179,6 +179,6 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     # For sliding tokens if you decide to use them, but for now, we focus on access/refresh
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=45),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }

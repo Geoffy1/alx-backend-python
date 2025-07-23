@@ -1,31 +1,31 @@
 # messaging_app/chats/permissions.py
 from rest_framework import permissions
-from rest_framework import status # Import status for potential use or string matching
 
 class IsParticipantOfConversation(permissions.BasePermission):
-    # This permission ensures that only participants can interact with conversation/message objects.
-    # This covers viewing (GET), sending/creating (POST), updating (PUT, PATCH), and deleting (DELETE).
+    """
+    Custom permission to only allow participants of a conversation to view, update, or delete it.
+    """
     message = "You are not a participant of this conversation."
 
-    def has_permission(self, request, view):
-        # Allow read-only access for safe methods (GET, HEAD, OPTIONS)
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any participant, so we'll always allow GET, HEAD, or OPTIONS requests
         if request.method in permissions.SAFE_METHODS:
-            return True
-        # For other methods (POST, PUT, PATCH, DELETE), user must be authenticated.
-        return request.user and request.user.is_authenticated
+            return request.user in obj.participants.all()
+
+        # Write permissions are only allowed to participants
+        return request.user in obj.participants.all()
+
+class IsSenderOfMessage(permissions.BasePermission):
+    """
+    Custom permission to only allow senders of a message to update or delete it.
+    Allows participants to view messages (SAFE_METHODS).
+    """
+    message = "You are not the sender of this message or not a participant in the conversation."
 
     def has_object_permission(self, request, view, obj):
-        # Object-level check: only participants can interact with the conversation/message object.
-        # This covers PUT, PATCH, DELETE operations on the object.
-
-        if request.user.is_anonymous: # Should be caught by has_permission, but good as a fallback
-            return False
-
-        # If the object is a Conversation instance
-        if hasattr(obj, 'participants'): # Check if it's a Conversation or similar object
-            return request.user in obj.participants.all()
-        # If the object is a Message instance, check its parent conversation's participants
-        elif hasattr(obj, 'conversation') and hasattr(obj.conversation, 'participants'):
+        # Read permissions are allowed to any participant of the conversation
+        if request.method in permissions.SAFE_METHODS:
             return request.user in obj.conversation.participants.all()
 
-        return False # Fallback for unexpected object types
+        # Write permissions (PUT, PATCH, DELETE) are only allowed to the sender
+        return obj.sender == request.user

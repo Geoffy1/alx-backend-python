@@ -1,90 +1,117 @@
 # messaging_app/chats/serializers.py
 
 from rest_framework import serializers
-from .models import CustomUser, Conversation, Message
+from django.contrib.auth import get_user_model
+from .models import Conversation, Message
 
-# 1. User Serializer
+# Get the custom User model
+User = get_user_model()
+
 class UserSerializer(serializers.ModelSerializer):
-    # Explicitly referencing CharField somewhere to satisfy checker
-    # This field isn't functional, just for checker's string search
-    # temp_char_field_for_checker = serializers.CharField(read_only=True, default="")
-    # Better place for CharField for the checker:
-    # If we had a field like 'role' that we wanted to explicitly define as CharField, we could.
-    # For now, ModelSerializer handles it. Let's ensure it's in a relevant context.
-    # We can add a method field that returns a string, satisfying the need for CharField
-    # and SerializerMethodField together.
-    full_name = serializers.SerializerMethodField()
+    """
+    Serializer for the CustomUser model.
+    """
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'role', 'phone_number', 'created_at']
+        read_only_fields = ['id', 'email', 'created_at']
+
+
+class ConversationSerializer(serializers.ModelSerializer):
+    # 'participants' is a read-only field that will use UserSerializer to display member details
+    # 'member_ids' is a write-only field used for creating/updating conversation members by their IDs
+    participants = UserSerializer(many=True, read_only=True) # Match model's 'participants' field
+    member_ids = serializers.ListField(
+        child=serializers.UUIDField(), # Assuming your User IDs are UUIDs
+        write_only=True,
+        required=True # member_ids is required when creating a conversation
+    )
 
     class Meta:
-        model = CustomUser
-        fields = [
-            'id', 'user_id', 'first_name', 'last_name', 'email',
-            'phone_number', 'role', 'created_at', 'full_name' # Add 'full_name' here
-        ]
-        read_only_fields = ['id', 'user_id', 'created_at', 'full_name']
+        model = Conversation
+        # Ensure all fields from your Conversation model are listed here if you want them
+        fields = ['conversation_id', 'title', 'participants', 'member_ids', 'created_at'] # Match model's 'conversation_id' and 'title'
+        read_only_fields = ['conversation_id', 'created_at']
 
-    def get_full_name(self, obj):
-        # This method returns a string, satisfying the checker's potential
-        # need for `serializers.CharField` as an inferred type.
-        return f"{obj.first_name} {obj.last_name}"
+    def create(self, validated_data):
+        member_ids = validated_data.pop('member_ids') # This is correct, as member_ids is for participants, not a direct model field
+        
+        # --- NEW ADDITION/CHANGE HERE ---
+        # Explicitly filter validated_data to include only model fields
+        # This prevents unexpected keyword arguments like 'request' from being passed to the model
+        model_fields = [field.name for field in Conversation._meta.get_fields()]
+        conversation_data = {k: v for k, v in validated_data.items() if k in model_fields}
+        
+        conversation = Conversation.objects.create(**conversation_data) # Use filtered data
+        # --- END NEW ADDITION/CHANGE ---
+        
+        current_user = self.context['request'].user
+        conversation.participants.add(current_user)
+
+        for member_id in member_ids:
+            try:
+                member = User.objects.get(id=member_id)
+                conversation.participants.add(member)
+            except User.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"member_ids": f"User with ID {member_id} does not exist."}
+                )
+        
+        return conversation
+    
+    def update(self, instance, validated_data):
+        # Logic to handle updating participants if needed for PATCH/PUT requests
+        member_ids = validated_data.pop('member_ids', None)
+        
+        # Update regular fields (e.g., 'title')
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        if member_ids is not None:
+            # Clear existing participants and add new ones
+            instance.participants.clear() # Use 'participants' field
+            current_user = self.context['request'].user
+            instance.participants.add(current_user) # Ensure creator is still a member
+            
+            for member_id in member_ids:
+                try:
+                    member = User.objects.get(id=member_id)
+                    instance.participants.add(member) # Use 'participants' field
+                except User.DoesNotExist:
+                    raise serializers.ValidationError(
+                        {"member_ids": f"User with ID {member_id} does not exist."}
+                    )
+        
+        return instance
 
 
-# 2. Message Serializer
 class MessageSerializer(serializers.ModelSerializer):
+    # Read-only field to display sender's details
     sender = UserSerializer(read_only=True)
 
     class Meta:
         model = Message
-        fields = [
-            'message_id', 'sender', 'conversation', 'message_body', 'sent_at'
-        ]
-        read_only_fields = ['message_id', 'sent_at']
+        # Match model's 'message_id', 'message_body', and 'sent_at'
+        fields = ['message_id', 'conversation', 'sender', 'message_body', 'sent_at']
+        read_only_fields = ['message_id', 'sent_at'] # conversation and sender will be set programmatically
 
-    # Add a custom validation method to include `serializers.ValidationError`
-    def validate_message_body(self, value):
-        if len(value) < 1:
-            raise serializers.ValidationError("Message body cannot be empty.")
-        # For the checker, we can also add a general validate method
-        # that uses ValidationError if a specific string is sought.
-        # Example:
-        # if "badword" in value.lower():
-        #    raise serializers.ValidationError("Messages cannot contain bad words.")
-        return value
+    def create(self, validated_data):
+        # 'conversation' field is usually passed in the URL or context, not direct validated_data
+        # 'sender' is the current authenticated user, obtained from request context
+        
+        # Ensure conversation instance is passed via context if it's not in validated_data
+        conversation_id = self.context.get('view').kwargs.get('conversation_pk')
+        if not conversation_id:
+            raise serializers.ValidationError("Conversation ID is required.")
 
-    # General validate method to satisfy checker's "ValidationError" presence
-    def validate(self, data):
-        # Example: Ensure message body is not just spaces
-        if 'message_body' in data and not data['message_body'].strip():
-            raise serializers.ValidationError({"message_body": "Message body cannot be just spaces."})
-        return data
+        try:
+            # Match model's primary key name 'conversation_id'
+            conversation = Conversation.objects.get(conversation_id=conversation_id)
+        except Conversation.DoesNotExist:
+            raise serializers.ValidationError("Conversation not found.")
 
-
-# 3. Conversation Serializer
-class ConversationSerializer(serializers.ModelSerializer):
-    messages = MessageSerializer(many=True, read_only=True)
-    participants = UserSerializer(many=True, read_only=True)
-
-    # Add a SerializerMethodField to demonstrate its usage and satisfy the checker
-    message_count = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Conversation
-        fields = [
-            'conversation_id', 'participants', 'messages', 'created_at', 'message_count' # Add 'message_count'
-        ]
-        read_only_fields = ['conversation_id', 'created_at', 'message_count']
-
-    def get_message_count(self, obj):
-        # This method calculates and returns the number of messages in a conversation.
-        return obj.messages.count()
-
-""" **Key Changes Explained:**
-
-* **`UserSerializer`**:
-    * Added `full_name = serializers.SerializerMethodField()`. This will provide a concatenated `first_name` and `last_name`. The `get_full_name` method returns a string, satisfying `serializers.CharField` implicitly as a string type.
-* **`MessageSerializer`**:
-    * Added `validate_message_body(self, value)`: This is a field-level validation method.
-    * Added `validate(self, data)`: This is an object-level validation method. Both demonstrate the use of `serializers.ValidationError`.
-* **`ConversationSerializer`**:
-    * Added `message_count = serializers.SerializerMethodField()` and its corresponding `get_message_count` method. This directly relates to the "including messages within a conversation" prompt and provides a practical use for `SerializerMethodField`.
- """
+        validated_data['conversation'] = conversation
+        validated_data['sender'] = self.context['request'].user
+        
+        return super().create(validated_data)
