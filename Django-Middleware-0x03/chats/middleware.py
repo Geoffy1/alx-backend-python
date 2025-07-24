@@ -19,7 +19,7 @@ RATE_LIMIT_WINDOW_SECONDS = 60 # 1 minute
 # --- Logging Setup for RequestLoggingMiddleware (Task 1 Fix) ---
 # IMPORTANT CHANGE: Log directly to BASE_DIR/requests.log as per checker's likely expectation.
 # Removed the 'log_dir' variable and its os.makedirs call.
-LOG_FILE_PATH = os.path.join(settings.BASE_DIR, 'requests.log')
+LOG_FILE_PATH = os.path.join(settings.BASE_DIR, 'requests.log')  #os.path.join(settings.BASE_DIR, 'requests.log')
 
 # IMPORTANT CHANGE: Use a unique logger name to distinguish it.
 request_logger = logging.getLogger('request_logger')
