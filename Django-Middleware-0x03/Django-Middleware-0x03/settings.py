@@ -1,11 +1,11 @@
-# Django-Middleware-0x03/settings.py
+# Django-Middleware-0x03/main_project_config/settings.py
 
 from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR should now correctly point to Django-Middleware-0x03/
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent # .parent.parent to go up two levels
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -38,7 +38,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware', # <-- Ensure this is before
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Your custom middlewares, ordered from top to bottom based on dependencies:
@@ -48,8 +48,8 @@ MIDDLEWARE = [
     'chats.middleware.RolePermissionMiddleware',      # Task 4
 ]
 
-# IMPORTANT CHANGE: Point to 'urls' directly in the root
-ROOT_URLCONF = 'urls'
+# IMPORTANT CHANGE: Point to 'main_project_config.urls'
+ROOT_URLCONF = 'Django-Middleware-0x03.urls'
 
 TEMPLATES = [
     {
@@ -67,11 +67,11 @@ TEMPLATES = [
     },
 ]
 
-# IMPORTANT CHANGE: Point to 'wsgi.application' directly in the root
-WSGI_APPLICATION = 'wsgi.application'
+# IMPORTANT CHANGE: Point to 'main_project_config.wsgi.application'
+WSGI_APPLICATION = 'Django-Middleware-0x03.wsgi.application'
 
-# IMPORTANT CHANGE: Point to 'asgi.application' directly in the root (if you have it)
-ASGI_APPLICATION = 'asgi.application'
+# IMPORTANT CHANGE: Point to 'main_project_config.asgi.application' (if you have it)
+ASGI_APPLICATION = 'Django-Middleware-0x03.application'
 
 
 # Database
@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Africa/Nairobi' # Changed to Nairobi as per context
+TIME_ZONE = 'Africa/Nairobi'
 USE_I18N = True
 USE_TZ = True
 
@@ -125,4 +125,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User Model
-AUTH_USER_MODEL = 'chats.CustomUser' # Assuming your CustomUser is in the 'chats' app
+AUTH_USER_MODEL = 'chats.CustomUser'
