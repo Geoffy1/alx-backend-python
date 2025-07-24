@@ -60,7 +60,7 @@ MIDDLEWARE = [
     'chats.middleware.RolepermissionMiddleware',
 ]
 
-ROOT_URLCONF = "Django-Middleware-0x03.urls"
+ROOT_URLCONF = "messaging_app.urls"
 
 TEMPLATES = [
     {
@@ -77,7 +77,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "Django-Middleware-0x03.wsgi.application"
+WSGI_APPLICATION = "messaging_app.wsgi.application"
 
 
 # Database
