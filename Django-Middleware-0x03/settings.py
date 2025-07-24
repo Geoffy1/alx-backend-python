@@ -45,7 +45,7 @@ MIDDLEWARE = [
     'chats.middleware.RequestLoggingMiddleware',      # Task 1
     'chats.middleware.RestrictAccessByTimeMiddleware',# Task 2
     'chats.middleware.OffensiveLanguageMiddleware',   # Task 3
-    'chats.middleware.RolePermissionMiddleware',      # Task 4
+    'chats.middleware.RolepermissionMiddleware',      # Task 4
 ]
 
 # IMPORTANT CHANGE: Point to 'main_project_config.urls'
