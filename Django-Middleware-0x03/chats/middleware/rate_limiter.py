@@ -2,7 +2,7 @@
 from django.http import JsonResponse
 from time import time
 
-class OffensiveLanguageMiddleware:
+class OffensiveLanguageMiddleware: # Class name is OffensiveLanguageMiddleware as per prompt
     def __init__(self, get_response):
         self.get_response = get_response
         self.request_log = {}  # {ip: [timestamps]}
@@ -23,4 +23,3 @@ class OffensiveLanguageMiddleware:
 
             self.request_log[ip].append(now)
         return self.get_response(request)
-

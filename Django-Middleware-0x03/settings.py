@@ -55,13 +55,13 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # middlewares
-    'chats.middleware.request_logger.RequestLoggingMiddleware',
-    'chats.middleware.time_restrictor.RestrictAccessByTimeMiddleware',
-    'chats.middleware.rate_limiter.OffensiveLanguageMiddleware',
-    'chats.middleware.role_permission.RolePermissionMiddleware',
+    'chats.middleware.request_logger.RequestLoggingMiddleware', # Task 1
+    'chats.middleware.time_restrictor.RestrictAccessByTimeMiddleware', # Task 2
+    'chats.middleware.rate_limiter.OffensiveLanguageMiddleware', # Task 3 (Rate Limiter)
+    'chats.middleware.role_permission.RolepermissionMiddleware', 
 ]
 
-ROOT_URLCONF = "messaging_app.urls"
+ROOT_URLCONF = "urls"
 
 TEMPLATES = [
     {
@@ -78,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "messaging_app.wsgi.application"
+WSGI_APPLICATION = "wsgi.application"
 
 
 # Database
