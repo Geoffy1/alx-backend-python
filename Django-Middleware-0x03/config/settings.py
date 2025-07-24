@@ -60,7 +60,8 @@ MIDDLEWARE = [
     'chats.middleware.RolePermissionMiddleware',
 ]
 
-ROOT_URLCONF = "messaging_app.urls"
+#ROOT_URLCONF = 'messaging_app.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
