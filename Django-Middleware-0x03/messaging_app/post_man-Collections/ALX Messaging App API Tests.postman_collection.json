@@ -1,0 +1,876 @@
+{
+	"info": {
+		"_postman_id": "29e95038-357a-48fd-bfa6-77230348d884",
+		"name": "ALX Messaging App API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46971162"
+	},
+	"item": [
+		{
+			"name": "1. POST - Get User1 Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/* // Parse the JSON response body",
+							"var jsonData = pm.response.json();",
+							"",
+							"// Check if the 'access' property exists in the response",
+							"if (jsonData && jsonData.access) {",
+							"    // Set the 'access' environment variable with the value of jsonData.access",
+							"    pm.environment.set(\"user_one_access\", jsonData.access);",
+							"    console.log(\"Access token set in environment variable: \" + jsonData.access);",
+							"} else {",
+							"    console.log(\"Access token not found in the response.\");",
+							"} */"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"user1@example.com\",\n    \"password\": \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/token/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. POST - Get User2 Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/* // Parse the JSON response body",
+							"var jsonData = pm.response.json();",
+							"",
+							"// Check if the 'access' property exists in the response",
+							"if (jsonData && jsonData.access) {",
+							"    // Set the 'access' environment variable with the value of jsonData.access",
+							"    pm.environment.set(\"user_two_access\", jsonData.access);",
+							"    console.log(\"Access token set in environment variable: \" + jsonData.access);",
+							"} else {",
+							"    console.log(\"Access token not found in the response.\");",
+							"} */"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"user2@example.com\",\n    \"password\": \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/token/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. POST - Get User3 Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/* // Parse the JSON response body",
+							"var jsonData = pm.response.json();",
+							"",
+							"// Check if the 'access' property exists in the response",
+							"if (jsonData && jsonData.access) {",
+							"    // Set the 'access' environment variable with the value of jsonData.access",
+							"    pm.environment.set(\"user_thre_access\", jsonData.access);",
+							"    console.log(\"Access token set in environment variable: \" + jsonData.access);",
+							"} else {",
+							"    console.log(\"Access token not found in the response.\");",
+							"} */"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"user3@example.com\",\n    \"password\": \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/token/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. GET - List All Users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/users/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. POST - Create Conversation (User1 & User2)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Important Project Discussions\",\n    \"member_ids\": [\"ef75ceaf-a804-4dfd-a316-924f4410242e\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/conversations/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"conversations",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. GET - List Conversations (User1)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Important Project Discussions\",\n    \"participant_ids\": [\"ef75ceaf-a804-4dfd-a316-924f4410242e\"]\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/conversations/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"conversations",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7. GET - List Conversations (User2)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjU5LCJpYXQiOjE3NTMyNTc1NTksImp0aSI6IjI3NjczZGU5YmNhZTQ1NDBiNzIyYTI5ZmY1MjBiZDU1IiwidXNlcl9pZCI6ImVmNzVjZWFmLWE4MDQtNGRmZC1hMzE2LTkyNGY0NDEwMjQyZSJ9.f_0nr5cTO_bdg-NSzo85V4hybn3i331kU-TEVyeQtW8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/conversations/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"conversations",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8. GET - List Conversations (User3 - Non-Participant)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjY0LCJpYXQiOjE3NTMyNTc1NjQsImp0aSI6ImE3NjcxNmY1ZmUyMTQ3MDJhYjY2MmMwM2RiM2JhZWYwIiwidXNlcl9pZCI6ImYyMmQxZDA4LTZlNWItNGYxNi1hY2JiLWVmZDU4M2RjYmVlMiJ9.7P_W_gAomIhnG_nwGNp86lyktwgrueWCFGokvu4eIOo",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/conversations/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"conversations",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9. GET - Specific Conversation (User3 - Forbidden)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjY0LCJpYXQiOjE3NTMyNTc1NjQsImp0aSI6ImE3NjcxNmY1ZmUyMTQ3MDJhYjY2MmMwM2RiM2JhZWYwIiwidXNlcl9pZCI6ImYyMmQxZDA4LTZlNWItNGYxNi1hY2JiLWVmZDU4M2RjYmVlMiJ9.7P_W_gAomIhnG_nwGNp86lyktwgrueWCFGokvu4eIOo",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/conversations/cc241ecb-0d25-4796-9fd3-ec67ad8a7741/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"conversations",
+						"cc241ecb-0d25-4796-9fd3-ec67ad8a7741",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10. PATCH - Update Conversation (User1)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Urgent Development Discussion - Updated Title\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/conversations/10f64d83-10ea-46c8-b958-601b98edbaff/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"conversations",
+						"10f64d83-10ea-46c8-b958-601b98edbaff",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11. POST - Send Message (User1)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"conversation_id\": \"5f347c51-0f8a-4adc-a14b-cf7eb30938fb\", // Changed from \"conversation_id\" to \"conversation\"\n    \"message_body\": \"This is the first message from User1 in our project chat!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12. POST - Send Message (User2)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjU5LCJpYXQiOjE3NTMyNTc1NTksImp0aSI6IjI3NjczZGU5YmNhZTQ1NDBiNzIyYTI5ZmY1MjBiZDU1IiwidXNlcl9pZCI6ImVmNzVjZWFmLWE4MDQtNGRmZC1hMzE2LTkyNGY0NDEwMjQyZSJ9.f_0nr5cTO_bdg-NSzo85V4hybn3i331kU-TEVyeQtW8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"conversation_id\": \"5f347c51-0f8a-4adc-a14b-cf7eb30938fb\",\n    \"message_body\": \"User2 replies: Thanks for the update, User1!\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "13. POST - Send Message (User3 - Unauthorized)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjY0LCJpYXQiOjE3NTMyNTc1NjQsImp0aSI6ImE3NjcxNmY1ZmUyMTQ3MDJhYjY2MmMwM2RiM2JhZWYwIiwidXNlcl9pZCI6ImYyMmQxZDA4LTZlNWItNGYxNi1hY2JiLWVmZDU4M2RjYmVlMiJ9.7P_W_gAomIhnG_nwGNp86lyktwgrueWCFGokvu4eIOo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"conversation_id\": \"cc241ecb-0d25-4796-9fd3-ec67ad8a7741\",\n    \"message_body\": \"I'm not in this chat, but I'll try to sneak a message in!\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "14. GET - List All Messages (User1) - Pagination Test",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/?page=1&page_size=1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						""
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "page_size",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "15. GET - Messages Filter by Conversation (User1)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/?conversation=cc241ecb-0d25-4796-9fd3-ec67ad8a7741",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						""
+					],
+					"query": [
+						{
+							"key": "conversation",
+							"value": "cc241ecb-0d25-4796-9fd3-ec67ad8a7741"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "16. GET - Specific Message (User1)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/<message1_id>/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						"<message1_id>",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "17. GET - Specific Message (User3 - Forbidden)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjY0LCJpYXQiOjE3NTMyNTc1NjQsImp0aSI6ImE3NjcxNmY1ZmUyMTQ3MDJhYjY2MmMwM2RiM2JhZWYwIiwidXNlcl9pZCI6ImYyMmQxZDA4LTZlNWItNGYxNi1hY2JiLWVmZDU4M2RjYmVlMiJ9.7P_W_gAomIhnG_nwGNp86lyktwgrueWCFGokvu4eIOo",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/<message1_id>/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						"<message1_id>",
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "18. PATCH - Update Message (User1 - Sender)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"message_body\": \"User1's message has been updated successfully after review.\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/<message1_id>/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						"<message1_id>",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "19. PATCH - Update Message (User2 - Not Sender - Forbidden)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjU5LCJpYXQiOjE3NTMyNTc1NTksImp0aSI6IjI3NjczZGU5YmNhZTQ1NDBiNzIyYTI5ZmY1MjBiZDU1IiwidXNlcl9pZCI6ImVmNzVjZWFmLWE4MDQtNGRmZC1hMzE2LTkyNGY0NDEwMjQyZSJ9.f_0nr5cTO_bdg-NSzo85V4hybn3i331kU-TEVyeQtW8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"message_body\": \"User2 trying to edit User1's message without permission.\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/<message1_id>/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						"<message1_id>",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "20. DELETE - Delete Message (User1 - Sender)",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/<message1_id>/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						"<message1_id>",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "21. DELETE - Delete Message (User2 - Not Sender - Forbidden)",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMjYwMjUzLCJpYXQiOjE3NTMyNTc1NTMsImp0aSI6ImRmNzNjYzk1ZjI3ZjRkMzNiMmI3YzYwOWIxNmM4MWU4IiwidXNlcl9pZCI6Ijk4M2YxYzZmLWZiNDgtNDg4Ni1iMmE2LWM4NWQyOTYxNjYwZCJ9.v2KdwI6M4ze1_DtxQk8v1q0vOIl5LiNIA08vOhloGLM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/messages/<message2_id>/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"messages",
+						"<message2_id>",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
