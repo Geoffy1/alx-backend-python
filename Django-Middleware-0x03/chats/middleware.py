@@ -78,7 +78,7 @@ request_timestamps = defaultdict(list)
 RATE_LIMIT_MESSAGES = 5
 RATE_LIMIT_WINDOW_SECONDS = 60 # 1 minute
 
-class RateLimitChatMiddleware: # Renamed for clarity, you can use OffensiveLanguageMiddleware
+class OffensiveLanguageMiddleware: # Renamed for clarity, you can use OffensiveLanguageMiddleware
     def __init__(self, get_response):
         self.get_response = get_response
 
