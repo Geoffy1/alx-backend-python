@@ -108,7 +108,7 @@ class OffensiveLanguageMiddleware: # Renamed for clarity, you can use OffensiveL
         response = self.get_response(request)
         return response
 
-class RolePermissionMiddleware:
+class RolepermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
