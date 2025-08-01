@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Detail</title>
+</head>
+<body>
+    <h1>Message Details</h1>
+    <p><a href="{% url 'conversation_list' %}">Back to Conversations</a></p>
+    <hr>
+    <h3>Original Message:</h3>
+    <div>
+        <strong>From: {{ main_message.sender.username }}</strong> to <strong>{{ main_message.receiver.username }}</strong>
+        <p>{{ main_message.content }}</p>
+        <small>Sent: {{ main_message.timestamp }}</small>
+        {% if main_message.edited %}<small>(Edited)</small>{% endif %}
+    </div>
+
+    {% if main_message.history.exists %}
+        <h4>Edit History:</h4>
+        <ul>
+            {% for history in main_message.history.all %}
+                <li>
+                    Old content: "{{ history.old_content }}" <small>at {{ history.edited_at }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <hr>
+    <h3>Replies:</h3>
+    {% if replies %}
+        <ul>
+            {% for reply in replies %}
+                <li>
+                    <strong>From: {{ reply.sender.username }}</strong> to <strong>{{ reply.receiver.username }}</strong>
+                    <p>{{ reply.content }}</p>
+                    <small>Sent: {{ reply.timestamp }}</small>
+                    {% if reply.edited %}<small>(Edited)</small>{% endif %}
+                    {% comment %}
+                        For truly recursive display, you'd create a custom template tag
+                        or a recursive template include to render nested replies.
+                        This example only shows direct replies.
+                    {% endcomment %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No replies yet.</p>
+    {% endif %}
+
+    {% comment %}
+    You would add a form here to allow users to reply to this message.
+    The form would submit a new Message instance with parent_message set to main_message.
+    {% endcomment %}
+</body>
+</html>

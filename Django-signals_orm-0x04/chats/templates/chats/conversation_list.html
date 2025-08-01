@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversations</title>
+</head>
+<body>
+    <h1>Your Conversations</h1>
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}! <a href="{% url 'delete_user_account' %}">Delete Account</a></p>
+        <p><a href="{% url 'admin:index' %}">Go to Admin</a></p>
+        <hr>
+        <h2>Messages</h2>
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>
+                        <strong>From: {{ message.sender.username }}</strong> to <strong>{{ message.receiver.username }}</strong>
+                        <p>{{ message.content }}</p>
+                        <small>Sent: {{ message.timestamp }}</small>
+                        {% if message.edited %}<small>(Edited)</small>{% endif %}
+                        <p><a href="{% url 'message_detail' message.id %}">View Details & Replies ({{ message.replies.count }})</a></p>
+                        <hr>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No messages yet.</p>
+        {% endif %}
+    {% else %}
+        <p>Please <a href="{% url 'admin:login' %}">log in</a> to view messages.</p>
+    {% endif %}
+</body>
+</html>
