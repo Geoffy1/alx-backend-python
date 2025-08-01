@@ -49,6 +49,32 @@ class MessageSignalTests(TestCase):
         Tests that deleting a user also deletes their related messages, notifications,
         and message histories due to CASCADE.
         """
+        # Messages will automatically create notifications via the signal
+        message1 = Message.objects.create(sender=self.user1, receiver=self.user2, content="Msg 1")
+        message2 = Message.objects.create(sender=self.user2, receiver=self.user1, content="Msg 2")
+
+        # The signal for editing logs the history
+        message1.content = "Msg 1 edited"
+        message1.save()
+
+        self.assertEqual(User.objects.count(), 2)
+        self.assertEqual(Message.objects.count(), 2)
+        # Now there should be exactly 2 notifications from the two message creations
+        self.assertEqual(Notification.objects.count(), 2)
+        self.assertEqual(MessageHistory.objects.count(), 1)
+
+        # Delete user1
+        user1_id = self.user1.id
+        self.user1.delete()
+
+        self.assertEqual(User.objects.count(), 1)
+        # The CASCADE on foreign keys should have deleted all related objects
+        self.assertEqual(Message.objects.count(), 0)
+        self.assertEqual(Notification.objects.count(), 0)
+        self.assertEqual(MessageHistory.objects.count(), 0)
+
+"""  def test_user_deletion_cleans_up_data(self):
+        
         message1 = Message.objects.create(sender=self.user1, receiver=self.user2, content="Msg 1")
         message2 = Message.objects.create(sender=self.user2, receiver=self.user1, content="Msg 2")
         # Triggering a save on message1 to create history for Task 1 test later
@@ -75,4 +101,4 @@ class MessageSignalTests(TestCase):
         # The history associated with message1 should also be gone because message1 is gone
         self.assertEqual(MessageHistory.objects.count(), 0)
         self.assertEqual(Message.objects.count(), 0) # All messages should be gone
-        self.assertEqual(Notification.objects.count(), 0) # All notifications should be gone
+        self.assertEqual(Notification.objects.count(), 0) # All notifications should be gone """
