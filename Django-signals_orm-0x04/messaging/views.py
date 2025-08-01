@@ -6,6 +6,7 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Q # Import Q objects for complex queries
+from django.views.decorators.cache import cache_page
 
 from .models import Message, Notification, MessageHistory
 
@@ -23,6 +24,7 @@ def delete_user(request):
     return render(request, 'messaging/confirm_delete.html')
 
 @login_required
+@cache_page(60)
 def user_conversations(request):
     """
     Displays a list of top-level messages for the authenticated user,
@@ -65,6 +67,23 @@ def message_detail(request, message_id):
         'replies': message.replies.all(),
     }
     return render(request, 'messaging/message_detail.html', context)
+
+@login_required
+def unread_inbox(request):
+    """
+    Displays a list of unread messages for the authenticated user,
+    leveraging the custom manager and .only() for optimization.
+    """
+    # Use the custom manager to get unread messages for the current user
+    # Use .only() to retrieve only the fields needed for the template,
+    # which avoids fetching unnecessary data.
+    unread_messages = Message.unread_messages.for_user(request.user).only(
+        'sender__username', 'content', 'timestamp', 'pk'
+    )
+    context = {
+        'unread_messages': unread_messages
+    }
+    return render(request, 'messaging/unread_inbox.html', context)
 
 """ # Django-signals_orm-0x04/messaging/views.py
 

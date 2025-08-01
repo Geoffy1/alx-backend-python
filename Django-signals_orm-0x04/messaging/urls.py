@@ -8,4 +8,5 @@ urlpatterns = [
     path('delete-account/', views.delete_user, name='delete_user'),
     path('conversations/', views.user_conversations, name='user_conversations'),
     path('messages/<int:message_id>/', views.message_detail, name='message_detail'),
+    path('inbox/unread/', views.unread_inbox, name='unread_inbox'),
 ]

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unread Inbox</title>
+</head>
+<body>
+    <h1>My Unread Messages</h1>
+    <a href="{% url 'user_conversations' %}">Back to all conversations</a>
+    <hr>
+    {% for message in unread_messages %}
+        <div>
+            <p><strong>From:</strong> {{ message.sender.username }}</p>
+            <p>{{ message.content }}</p>
+            <small>Received: {{ message.timestamp }}</small>
+            <p><a href="{% url 'message_detail' message.id %}">View message</a></p>
+        </div>
+        <hr>
+    {% empty %}
+        <p>You have no unread messages.</p>
+    {% endfor %}
+</body>
+</html>
