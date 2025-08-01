@@ -77,7 +77,10 @@ def unread_inbox(request):
     # Use the custom manager to get unread messages for the current user
     # Use .only() to retrieve only the fields needed for the template,
     # which avoids fetching unnecessary data.
-    unread_messages = Message.unread_messages.for_user(request.user).only(
+    """ unread_messages = Message.unread_messages.for_user(request.user).only(
+        'sender__username', 'content', 'timestamp', 'pk'
+    ) """
+    unread_messages = Message.unread.unread_for_user(request.user).only(
         'sender__username', 'content', 'timestamp', 'pk'
     )
     context = {

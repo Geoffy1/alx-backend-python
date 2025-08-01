@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from .managers import UnreadMessagesManager
 
 # Custom Manager for unread messages
 class UnreadMessagesManager(models.Manager):
