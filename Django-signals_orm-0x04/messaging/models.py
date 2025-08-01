@@ -10,7 +10,8 @@ class Message(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False) # For Task 4
     parent_message = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='replies') # For Task 3
-    edited = models.BooleanField(default=False) # For Task 1
+    #edited = models.BooleanField(default=False) # For Task 1
+    edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='edited_messages')
 
     class Meta:
         ordering = ['timestamp']
