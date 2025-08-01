@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Deletion</title>
+</head>
+<body>
+    <h1>Are you sure you want to delete your account?</h1>
+    <form action="{% url 'delete_user' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, delete my account</button>
+    </form>
+    <p><a href="{% url 'home' %}">Cancel</a></p>
+</body>
+</html>

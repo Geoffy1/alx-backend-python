@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to the Django Messaging App!</h1>
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}!</p>
+        <form action="{% url 'delete_user' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Delete My Account</button>
+        </form>
+    {% else %}
+        <p>Please <a href="{% url 'admin:login' %}">log in</a>.</p>
+    {% endif %}
+</body>
+</html>
