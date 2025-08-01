@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversation</title>
+</head>
+<body>
+    <h1>Conversation</h1>
+    <div>
+        <p><strong>From:</strong> {{ message.sender.username }}</p>
+        <p><strong>To:</strong> {{ message.receiver.username }}</p>
+        <p>{{ message.content }}</p>
+        <small>({{ message.timestamp|date:"D, d M Y H:i" }})</small>
+    </div>
+
+    <hr>
+
+    <h2>Replies</h2>
+    {% for reply in replies %}
+        <div style="margin-left: 20px; border-left: 1px solid #ccc; padding-left: 10px;">
+            <p><strong>From:</strong> {{ reply.sender.username }}</p>
+            <p><strong>To:</strong> {{ reply.receiver.username }}</p>
+            <p>{{ reply.content }}</p>
+            <small>({{ reply.timestamp|date:"D, d M Y H:i" }})</small>
+        </div>
+    {% empty %}
+        <p>No replies yet.</p>
+    {% endfor %}
+    <hr>
+    <a href="{% url 'user_conversations' %}">Back to Conversations</a>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Conversations</title>
+</head>
+<body>
+    <h1>My Conversations</h1>
+    {% for message in messages %}
+        <div>
+            <p><strong>From:</strong> {{ message.sender.username }}</p>
+            <p><strong>To:</strong> {{ message.receiver.username }}</p>
+            <p>{{ message.content }}</p>
+            <a href="{% url 'message_detail' message.id %}">View Conversation</a>
+            <hr>
+        </div>
+    {% empty %}
+        <p>You have no conversations.</p>
+    {% endfor %}
+</body>
+</html>
