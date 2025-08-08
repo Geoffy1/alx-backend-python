@@ -5,28 +5,24 @@ services:
     image: mysql:8.0
     container_name: messaging_db_container
     environment:
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: messaging_app_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root_password
     volumes:
-      - db_data:/var/lib/mysql
+      - messaging_app_data:/var/lib/mysql
 
   web:
     build: .
     container_name: messaging_web_container
-    # Use the wait-for-db.sh script as the entrypoint
-    entrypoint: ["wait-for-db.sh", "db"]
-    # The actual command to run after the database is ready
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     ports:
       - "8000:8000"
-    depends_on:
-      - db
     volumes:
       - .:/app
-    env_file:
-      - .env
+    depends_on:
+      - db
+    command: >
+      sh -c "sleep 5 && python manage.py runserver 0.0.0.0:8000"
 
 volumes:
-  db_data:
+  messaging_app_data:
