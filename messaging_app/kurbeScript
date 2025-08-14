@@ -10,7 +10,7 @@ then
     exit 1
 fi
 
-# Check if kubectl is installed
+# Check kubectl is installed
 if ! command -v kubectl &> /dev/null
 then
     echo "kubectl could not be found. Please install it first."
