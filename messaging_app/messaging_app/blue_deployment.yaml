@@ -1,0 +1,25 @@
+# Existing deployment file, with added 'version: blue' label
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-app-blue
+  labels:
+    app: messaging-app
+    version: blue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: messaging-app
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: messaging-app
+        version: blue
+    spec:
+      containers:
+      - name: messaging-app-container
+        image: your-username/messaging-app:2.0
+        ports:
+        - containerPort: 8000

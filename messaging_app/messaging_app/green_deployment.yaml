@@ -1,0 +1,25 @@
+# New deployment file with a new version and 'version: green' label
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-app-green
+  labels:
+    app: messaging-app
+    version: green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: messaging-app
+      version: green
+  template:
+    metadata:
+      labels:
+        app: messaging-app
+        version: green
+    spec:
+      containers:
+      - name: messaging-app-container
+        image: your-username/messaging-app:2.0 # Assume this is the new version
+        ports:
+        - containerPort: 8000
