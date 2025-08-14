@@ -1,0 +1,15 @@
+# The service now uses a selector that can be changed to switch traffic.
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-app-service
+spec:
+  type: ClusterIP
+  selector:
+    app: messaging-app
+    # The 'version' label will be changed to switch between 'blue' and 'green'
+    version: blue
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000

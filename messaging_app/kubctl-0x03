@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# This script triggers and monitors a rolling update
+# and tests the service for downtime.
+
+DEPLOYMENT_NAME="messaging-app-blue"
+INGRESS_HOST="messaging-app.local"
+INGRESS_PORT="80"
+
+echo "Applying the updated deployment file..."
+kubectl apply -f blue_deployment.yaml
+
+echo -e "\nMonitoring the rolling update status..."
+kubectl rollout status deployment "$DEPLOYMENT_NAME"
+
+echo -e "\nRolling update is complete. Testing for downtime..."
+
+# This part simulates continuous requests while the update happens
+echo "Press Ctrl+C to stop the continuous test."
+while true
+do
+  # Minikube's IP can be retrieved with `minikube ip`
+  # We use the Ingress host to route traffic correctly
+  minikube_ip=$(minikube ip)
+  response=$(curl -s -o /dev/null -w "%{http_code}" "http://$minikube_ip/api/" -H "Host: $INGRESS_HOST")
+  if [ "$response" != "200" ]; then
+    echo -e "\n[$(date)] Service is down! HTTP Code: $response"
+  else
+    echo -n "."
+  fi
+  sleep 0.1
+done
+
+echo -e "\nVerifying the rolling update is complete by checking the image version of pods:"
+kubectl get pods -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[0].image}{"\n"}{end}'
