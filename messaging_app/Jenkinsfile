@@ -1,0 +1,32 @@
+// messaging_app/Jenkinsfile
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo 'Checking out source code...'
+                git branch: 'master', credentialsId: 'github-credentials', url: 'https://github.com/Geoffy1/alx-backend-python.git'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                echo 'Installing dependencies and running tests...'
+                sh '''
+                    cd messaging_app
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install -r requirements.txt
+                    pytest
+                '''
+            }
+        }
+        stage('Generate Report') {
+            steps {
+                echo 'Generating test report...'
+                sh 'pytest --junitxml=test-report.xml'
+                junit 'test-report.xml'
+            }
+        }
+    }
+}
