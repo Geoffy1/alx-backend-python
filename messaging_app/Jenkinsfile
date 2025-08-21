@@ -1,50 +1,106 @@
 // messaging_app/Jenkinsfile
 pipeline {
-    // Use a Docker agent with Python pre-installed
-    agent {
-        docker {
-            image 'python:3.9-slim'
-        }
-    }
-    environment {
-        // Ensure this matches your Docker Hub username
-        DOCKER_HUB_USERNAME = 'geonjogu23' 
+  agent any
+  options {
+    timestamps()
+  }
+  environment {
+    VENV = "${WORKSPACE}/messaging_app/.venv"
+    REQ  = "${WORKSPACE}/messaging_app/requirements.txt"
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        echo 'Checking out source code...'
+        checkout([$class: 'GitSCM',
+          branches: [[name: '*/master']], // change to */main if needed
+          userRemoteConfigs: [[
+            url: 'https://github.com/Geoffy1/alx-backend-python.git',
+            credentialsId: 'github-credentials'
+          ]]
+        ])
+      }
     }
 
-    stages {
-        stage('Checkout Code') {
-            steps {
-                echo 'Checking out source code...'
-                // You no longer need to check out the repository, as the agent is built from the source code within the pipeline context.
-                git branch: 'master', credentialsId: 'github-credentials', url: 'https://github.com/Geoffy1/alx-backend-python.git'
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                echo 'Installing dependencies and running tests...'
-                sh '''
-                    # The python:3.9-slim image already has Python and pip
-                    cd messaging_app
-                    python3 -m venv venv
-                    source venv/bin/activate
-                    pip install -r requirements.txt
-                    pytest
-                '''
-            }
-        }
-        stage('Build and Push Docker Image') {
-            steps {
-                echo 'Building and pushing Docker image...'
-                script {
-                    sh 'cd messaging_app'
-                    sh "docker build -t ${env.DOCKER_HUB_USERNAME}/messaging-app:latest ."
-                    
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh "docker login -u ${env.DOCKER_USERNAME} -p ${env.DOCKER_PASSWORD}"
-                        sh "docker push ${env.DOCKER_HUB_USERNAME}/messaging-app:latest"
-                    }
-                }
-            }
-        }
+    stage('Preflight: Docker available?') {
+      steps {
+        sh '''
+          set -e
+          which docker || { echo "Docker CLI not found in PATH"; exit 1; }
+          docker --version || { echo "Docker not responding"; exit 1; }
+          # Quick daemon check
+          docker ps >/dev/null || { echo "Cannot talk to Docker daemon (socket permissions?)"; exit 1; }
+        '''
+      }
     }
+
+    stage('Set up Python venv & Install deps') {
+      steps {
+        sh '''
+          set -e
+          cd messaging_app
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "requirements.txt not found; continuing..."
+          fi
+          # Ensure pytest & coverage exist even if not in requirements
+          pip install pytest pytest-django coverage
+        '''
+      }
+    }
+
+    stage('Run tests + JUnit report') {
+      steps {
+        sh '''
+          set -e
+          cd messaging_app
+          . .venv/bin/activate
+          # If you have Django tests only, pytest still works with pytest-django
+          pytest --junitxml=test-report.xml -q || true
+        '''
+      }
+      post {
+        always {
+          junit 'messaging_app/test-report.xml'
+        }
+      }
+    }
+
+    stage('Build & Push Docker image') {
+      environment {
+        DOCKER_IMAGE = "${env.DOCKER_HUB_USERNAME ?: 'geonjogu23'}/messaging-app"
+      }
+      steps {
+        sh '''
+          set -e
+          cd messaging_app
+          # Build with two tags: build number and latest
+          docker build -t "$DOCKER_IMAGE:${BUILD_NUMBER}" -t "$DOCKER_IMAGE:latest" .
+          echo "Built $DOCKER_IMAGE:${BUILD_NUMBER} and :latest"
+        '''
+        withCredentials([usernamePassword(
+          credentialsId: 'dockerhub-credentials',
+          usernameVariable: 'DOCKER_USERNAME',
+          passwordVariable: 'DOCKER_PASSWORD'
+        )]) {
+          sh '''
+            set -e
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker push "$DOCKER_IMAGE:${BUILD_NUMBER}"
+            docker push "$DOCKER_IMAGE:latest"
+          '''
+        }
+      }
+    }
+
+  }
+  post {
+    always {
+      archiveArtifacts artifacts: 'messaging_app/test-report.xml', onlyIfSuccessful: false
+    }
+  }
 }

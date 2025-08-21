@@ -1,25 +1,21 @@
-# Use an official Python runtime as a base image
-#FROM python:3.10
-# Use a slim Python 3.9 image as the base#
+
+# messaging_app/Dockerfile
 FROM python:3.9-slim
-# new
+
 ENV PYTHONDONTWRITEBYTECODE=1
-# new
 ENV PYTHONUNBUFFERED=1
-# Set the working directory in the container
+
 WORKDIR /app
 
-# Copy the requirements file and install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# System deps for building (optional, add as needed)
+RUN apt-get update && apt-get install -y build-essential && rm -rf /var/lib/apt/lists/*
 
-# Copy the rest of the application code into the container
-COPY . .
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r /app/requirements.txt
 
-# Expose the port your Django app runs on
+COPY . /app
+
 EXPOSE 8000
-
-# Run the Django application using Gunicorn
+# Adjust module if your Django project module differs
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "messaging_app.wsgi:application"]
-# Command to run the Django development server
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
