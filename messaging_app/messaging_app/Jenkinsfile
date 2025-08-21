@@ -145,23 +145,26 @@ pipeline {
             }
         }
 
-        stage('Set up Python venv & Install deps') {
-            steps {
-                sh '''
-                    set -e
-                    cd messaging_app
-                    python3 -m venv .venv
-                    . .venv/bin/activate
-                    python -m pip install --upgrade pip
-                    if [ -f requirements.txt ]; then
-                        pip install -r requirements.txt
-                    else
-                        echo "requirements.txt not found; continuing..."
-                    fi
-                    pip install pytest pytest-django coverage
-                '''
-            }
-        }
+        // ... (rest of the Jenkinsfile)
+stage('Set up Python venv & Install deps') {
+  steps {
+    sh '''
+      set -e
+      cd messaging_app
+      python3 -m venv .venv
+      . .venv/bin/activate
+      python3 -m pip install --upgrade pip
+      if [ -f requirements.txt ]; then
+        pip3 install -r requirements.txt
+      else
+        echo "requirements.txt not found; continuing..."
+      fi
+      # Ensure pytest & coverage exist even if not in requirements
+      pip3 install pytest pytest-django coverage
+    '''
+  }
+}
+// ... (rest of the Jenkinsfile)
 
         stage('Run tests + JUnit report') {
             steps {
