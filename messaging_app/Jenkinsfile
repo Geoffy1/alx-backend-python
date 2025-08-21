@@ -1,4 +1,4 @@
-// messaging_app/Jenkinsfile (Updated)
+// messaging_app/Jenkinsfile
 pipeline {
     agent any
     environment {
@@ -9,14 +9,14 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 echo 'Checking out source code...'
-                git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/Geoffy1/alx-backend-python.git'
+                // Corrected branch name from 'main' to 'master'
+                git branch: 'master', credentialsId: 'github-credentials', url: 'https://github.com/Geoffy1/alx-backend-python.git'
             }
         }
         stage('Run Tests') {
             steps {
                 echo 'Installing dependencies and running tests...'
                 sh '''
-                    # Install python3 and venv
                     sudo apt-get update
                     sudo apt-get install -y python3 python3-pip python3-venv
                     
