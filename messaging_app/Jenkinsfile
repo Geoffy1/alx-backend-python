@@ -3,7 +3,7 @@ pipeline {
     agent any
     environment {
         // Define an environment variable for your Docker Hub username
-        DOCKER_HUB_USERNAME = geonjogu23
+        DOCKER_HUB_USERNAME = 'geonjogu23'
     }
 
     stages {
