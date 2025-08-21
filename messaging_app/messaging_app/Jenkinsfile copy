@@ -9,30 +9,50 @@ pipeline {
     REQ  = "${WORKSPACE}/messaging_app/requirements.txt"
   }
   stages {
-    stage('Checkout') {
-      steps {
-        echo 'Checking out source code...'
-        checkout([$class: 'GitSCM',
-          branches: [[name: '*/master']], // change to */main if needed
-          userRemoteConfigs: [[
-            url: 'https://github.com/Geoffy1/alx-backend-python.git',
-            credentialsId: 'github-credentials'
-          ]]
-        ])
-      }
-    }
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                checkout scm
+                sh 'git branch'
+            }
+        }
 
-    stage('Preflight: Docker available?') {
-      steps {
-        sh '''
-          set -e
-          which docker || { echo "Docker CLI not found in PATH"; exit 1; }
-          docker --version || { echo "Docker not responding"; exit 1; }
-          # Quick daemon check
-          docker ps >/dev/null || { echo "Cannot talk to Docker daemon (socket permissions?)"; exit 1; }
-        '''
-      }
-    }
+        stage('Preflight: Docker available?') {
+            steps {
+                sh '''
+                    set -e
+                    if ! which docker; then
+                        echo "Docker CLI not found in PATH"
+                        exit 1
+                    fi
+                '''
+            }
+        }
+  // stages {
+  //   stage('Checkout') {
+  //     steps {
+  //       echo 'Checking out source code...'
+  //       checkout([$class: 'GitSCM',
+  //         branches: [[name: '*/master']], // change to */main if needed
+  //         userRemoteConfigs: [[
+  //           url: 'https://github.com/Geoffy1/alx-backend-python.git',
+  //           credentialsId: 'github-credentials'
+  //         ]]
+  //       ])
+  //     }
+  //   }
+
+  //   stage('Preflight: Docker available?') {
+  //     steps {
+  //       sh '''
+  //         set -e
+  //         which docker || { echo "Docker CLI not found in PATH"; exit 1; }
+  //         docker --version || { echo "Docker not responding"; exit 1; }
+  //         # Quick daemon check
+  //         docker ps >/dev/null || { echo "Cannot talk to Docker daemon (socket permissions?)"; exit 1; }
+  //       '''
+  //     }
+  //   }
 
     stage('Set up Python venv & Install deps') {
       steps {
