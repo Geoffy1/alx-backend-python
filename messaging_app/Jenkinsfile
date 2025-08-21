@@ -2,21 +2,24 @@
 pipeline {
     agent any
     environment {
-        // Define an environment variable for your Docker Hub username
-        DOCKER_HUB_USERNAME = 'geonjogu23'
+        DOCKER_HUB_USERNAME = 'geonjogu23' 
     }
 
     stages {
         stage('Checkout Code') {
             steps {
                 echo 'Checking out source code...'
-                git branch: 'master', credentialsId: 'github-credentials', url: 'https://github.com/Geoffy1/alx-backend-python.git'
+                git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/Geoffy1/alx-backend-python.git'
             }
         }
         stage('Run Tests') {
             steps {
                 echo 'Installing dependencies and running tests...'
                 sh '''
+                    # Install python3 and venv
+                    sudo apt-get update
+                    sudo apt-get install -y python3 python3-pip python3-venv
+                    
                     cd messaging_app
                     python3 -m venv venv
                     source venv/bin/activate
@@ -30,14 +33,10 @@ pipeline {
                 echo 'Building and pushing Docker image...'
                 script {
                     sh 'cd messaging_app'
-                    // Build the Docker image, tagging it with the Docker Hub username and image name
                     sh "docker build -t ${env.DOCKER_HUB_USERNAME}/messaging-app:latest ."
                     
-                    // Log in to Docker Hub securely using Jenkins credentials
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh "docker login -u ${env.DOCKER_HUB_USERNAME} -p ${env.DOCKER_PASSWORD}"
-                        
-                        // Push the image to Docker Hub
+                        sh "docker login -u ${env.DOCKER_USERNAME} -p ${env.DOCKER_PASSWORD}"
                         sh "docker push ${env.DOCKER_HUB_USERNAME}/messaging-app:latest"
                     }
                 }
