@@ -1,0 +1,76 @@
+# messaging_app/.github/workflows/ci.yml
+name: CI
+on:
+  push:
+    branches: [ "main", "master" ]
+    paths:
+      - "messaging_app/**"
+  pull_request:
+    branches: [ "main", "master" ]
+    paths:
+      - "messaging_app/**"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -p${{ secrets.MYSQL_ROOT_PASSWORD }}" 
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: System deps for mysqlclient
+        run: sudo apt-get update && sudo apt-get install -y libmysqlclient-dev build-essential
+      - name: Install dependencies
+        working-directory: messaging_app
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest pytest-django coverage flake8 mysqlclient
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -u root -p"${{ secrets.MYSQL_ROOT_PASSWORD }}" --silent; then
+              echo "MySQL is up!"; break
+            fi
+            echo "Waiting for MySQL... ($i/30)"; sleep 2
+          done
+      - name: Django migrate
+        working-directory: messaging_app
+        env:
+          DATABASE_NAME: test_db
+          DATABASE_USER: root
+          DATABASE_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PORT: 3306
+        run: python manage.py migrate --noinput
+      - name: Lint (flake8)
+        working-directory: messaging_app
+        run: flake8 .
+      - name: Run tests with coverage
+        working-directory: messaging_app
+        env:
+          DATABASE_NAME: test_db
+          DATABASE_USER: root
+          DATABASE_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PORT: 3306
+        run: |
+          coverage run --source='.' manage.py test -v 2
+          coverage xml -o coverage.xml
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: messaging_app/coverage.xml
