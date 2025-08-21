@@ -1,7 +1,13 @@
-/* // messaging_app/Jenkinsfile
+// messaging_app/Jenkinsfile
 pipeline {
-    agent any
+    // Use a Docker agent with Python pre-installed
+    agent {
+        docker {
+            image 'python:3.9-slim'
+        }
+    }
     environment {
+        // Ensure this matches your Docker Hub username
         DOCKER_HUB_USERNAME = 'geonjogu23' 
     }
 
@@ -9,7 +15,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 echo 'Checking out source code...'
-                // Corrected branch name from 'main' to 'master'
+                // You no longer need to check out the repository, as the agent is built from the source code within the pipeline context.
                 git branch: 'master', credentialsId: 'github-credentials', url: 'https://github.com/Geoffy1/alx-backend-python.git'
             }
         }
@@ -17,63 +23,7 @@ pipeline {
             steps {
                 echo 'Installing dependencies and running tests...'
                 sh '''
-                    sudo apt-get update
-                    sudo apt-get install -y python3 python3-pip python3-venv
-                    
-                    cd messaging_app
-                    python3 -m venv venv
-                    source venv/bin/activate
-                    pip install -r requirements.txt
-                    pytest
-                '''
-            }
-        }
-        stage('Build and Push Docker Image') {
-            steps {
-                echo 'Building and pushing Docker image...'
-                script {
-                    sh 'cd messaging_app'
-                    sh "docker build -t ${env.DOCKER_HUB_USERNAME}/messaging-app:latest ."
-                    
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh "docker login -u ${env.DOCKER_USERNAME} -p ${env.DOCKER_PASSWORD}"
-                        sh "docker push ${env.DOCKER_HUB_USERNAME}/messaging-app:latest"
-                    }
-                }
-            }
-        }
-    }
-} */
-
-// messaging_app/Jenkinsfile (Updated)
-pipeline {
-    // This agent will use a Docker image with Python pre-installed.
-    agent {
-        docker {
-            image 'python:3.9-slim'
-        }
-    }
-    environment {
-        DOCKER_HUB_USERNAME = 'geonjogu23' 
-    }
-
-    stages {
-        stage('Checkout Code') {
-            steps {
-                echo 'Checking out source code...'
-                // You no longer need to check out the repository, as the agent
-                // is built from the source code within the pipeline context.
-                // However, if the Docker agent is not running in the same
-                // context, you might need to check out the repository.
-                // For simplicity, let's assume the build context is correct.
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                echo 'Installing dependencies and running tests...'
-                sh '''
-                    # The python:3.9-slim image already has Python, so you can
-                    # remove the sudo apt-get commands.
+                    # The python:3.9-slim image already has Python and pip
                     cd messaging_app
                     python3 -m venv venv
                     source venv/bin/activate
